@@ -1,25 +1,54 @@
 import logo from './logo.svg';
 import './App.css';
+import LoginPage from "./feature/auth/presentation/page/LoginPage";
+import React, {Component} from 'react';
+import RegistrationPage from "./feature/auth/presentation/page/RegistrationPage";
+import WordsListPage from "./feature/words/presentation/WordsListPage";
+import TrainWordPage from "./feature/words/presentation/TrainWordPage";
+import {WordsDB} from "./feature/words/data/WordsDB";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export const wordsDB = new WordsDB();
+
+class App extends Component {
+
+  state = {
+    currentPage: 'login'
+  }
+  switchPath = (path) => {
+    this.setState({currentPage: path})
+  }
+
+  render() {
+    return (
+        <div>
+          {
+            this.state.currentPage === 'login' && <LoginPage
+                  switchPath={
+                    this.switchPath
+                  }/>
+          }
+          {  this.state.currentPage === 'registration' && <RegistrationPage
+                  switchPath={
+                    this.switchPath
+                  }/>
+          }
+          {
+            this.state.currentPage === 'words' && <WordsListPage
+                  switchPath={
+                    this.switchPath
+                  }
+              />
+          }
+          {
+            this.state.currentPage === 'train' && <TrainWordPage
+                  switchPath={
+                    this.switchPath
+                  }
+              />
+          }
+        </div>
+    );
+  }
 }
 
 export default App;
