@@ -1,5 +1,10 @@
 import React, {Component} from 'react';
 import {login, logout} from "../../domain/model/UserUseCases";
+import style from './LoginPage.module.css';
+import banner from '../../../../assets/login_back.png';
+import {Title} from "../../../../general/styled_components/Title";
+import {Subtitle} from "../../../../general/styled_components/Subtitle";
+import {GoogleLoginButton} from "../../../../general/styled_components/GoogleLoginButton";
 
 class LoginPage extends Component {
     constructor(props) {
@@ -27,20 +32,34 @@ class LoginPage extends Component {
     }
     render() {
         return (
-            <div>
-                <h1>Login Page</h1>
-                <form onSubmit={this.handleFormSubmit}>
-                    <input type="text"
-                           ref={this.emailRef}
-                           placeholder="Email"/>
-                    <input type="password"
-                           ref={this.passwordRef}
-                           placeholder="Password"/>
-                    <input type="submit" value="Login"/>
-                </form>
-                <button onClick={this.handleMoveToRegistration}>Move to registration</button>
+            <main className={style.main}>
+                <article className={style.login_box}>
+                    <form className={style.login_box_form} onSubmit={this.handleFormSubmit}>
+                        <section>
+                            <Title className={style.login_box_title} >Welcome Back!</Title>
+                            <Subtitle className={style.login_box_subtitle}>We can assign tasks, set deadlines, and track progress effortlessly.</Subtitle>
+                        </section>
 
-            </div>
+                        <label htmlFor="email">Email</label>
+                        <input type="text"
+                               ref={this.emailRef}
+                               placeholder="Email"/>
+                        <label htmlFor="password">Password</label>
+                        <input type="password"
+                               ref={this.passwordRef}
+                               placeholder="Password"/>
+                        <section>
+                            <input type="submit" value="Login"/>
+                            <GoogleLoginButton/>
+                        </section>
+
+                        <button onClick={this.handleMoveToRegistration}>Sign Up</button>
+                    </form>
+                </article>
+                <div className={style.banner_box}>
+                    <img className={style.banner_image} src={banner} alt="banner"/>
+                </div>
+            </main>
         );
     }
 }

@@ -13,16 +13,14 @@ class WordsListPage extends Component {
     }
     componentDidMount() {
         console.log('Component did mount');
-        this.refreshWordList().then(() => {
-            console.log('Word list refreshed');
-        });
+        this.refreshWordList()
     }
 
     validateForm = (word, translation) => {
         return word && translation;
     }
     refreshWordList = async () => {
-        const words = WordUseCases.readListOfWords();
+        const words = await WordUseCases.readListOfWords();
         console.log('Words', words);
         this.setState({wordList: words});
     }
@@ -66,6 +64,11 @@ class WordsListPage extends Component {
                     this.props.switchPath('login')
                 }}>Log out
                 </button>
+
+                <button onClick={() => {
+                    this.props.switchPath('train')
+                }}>Switch to train</button>
+
                 <h1>Words List Page</h1>
                 <form
                     onSubmit={this.handleWordFormSubmit}
