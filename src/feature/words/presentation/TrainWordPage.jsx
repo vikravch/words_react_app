@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {getNextWordForTraining, saveTrainingResult} from "../domain/model/WordUseCases";
+import {withRouterContext} from "../../../general/context/RouterContext";
 
 class TrainWordPage extends Component {
     state = {
@@ -56,4 +57,4 @@ class TrainWordPage extends Component {
     }
 }
 
-export default TrainWordPage;
+export default withRouterContext(TrainWordPage);

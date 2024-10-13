@@ -5,6 +5,7 @@ import banner from '../../../../assets/login_back.png';
 import {Title} from "../../../../general/styled_components/Title";
 import {Subtitle} from "../../../../general/styled_components/Subtitle";
 import {GoogleLoginButton} from "../../../../general/styled_components/GoogleLoginButton";
+import {withRouterContext} from "../../../../general/context/RouterContext";
 
 class LoginPage extends Component {
     constructor(props) {
@@ -12,9 +13,10 @@ class LoginPage extends Component {
         this.emailRef = React.createRef();
         this.passwordRef = React.createRef();
     }
+
     componentDidMount() {
         console.log('Component did mount')
-        logout().then(()=>{
+        logout().then(() => {
             console.log('Logged out')
         });
     }
@@ -30,14 +32,18 @@ class LoginPage extends Component {
     handleMoveToRegistration = () => {
         this.props.switchPath('registration');
     }
+
     render() {
         return (
             <main className={style.main}>
                 <article className={style.login_box}>
-                    <form className={style.login_box_form} onSubmit={this.handleFormSubmit}>
+                    <form className={style.login_box_form}
+                          onSubmit={
+                              (event) => this.handleFormSubmit(event)}>
                         <section>
-                            <Title className={style.login_box_title} >Welcome Back!</Title>
-                            <Subtitle className={style.login_box_subtitle}>We can assign tasks, set deadlines, and track progress effortlessly.</Subtitle>
+                            <Title className={style.login_box_title}>Welcome Back!</Title>
+                            <Subtitle className={style.login_box_subtitle}>We can assign tasks, set
+                                deadlines, and track progress effortlessly.</Subtitle>
                         </section>
 
                         <label htmlFor="email">Email</label>
@@ -64,4 +70,4 @@ class LoginPage extends Component {
     }
 }
 
-export default LoginPage;
+export default withRouterContext(LoginPage);

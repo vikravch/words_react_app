@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ErrorMessage from "./component/ErrorMessage";
 import {Word} from "../domain/model/Word";
 import * as WordUseCases from "../domain/model/WordUseCases";
+import {withRouterContext} from "../../../general/context/RouterContext";
 
 class WordsListPage extends Component {
     state = {
@@ -125,4 +126,4 @@ class WordsListPage extends Component {
     }
 }
 
-export default WordsListPage;
+export default withRouterContext(WordsListPage);

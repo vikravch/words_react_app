@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {register} from "../../domain/model/UserUseCases";
+import {withRouterContext} from "../../../../general/context/RouterContext";
 
 class RegistrationPage extends Component {
     constructor(props) {
@@ -41,4 +42,4 @@ class RegistrationPage extends Component {
     }
 }
 
-export default RegistrationPage;
+export default withRouterContext(RegistrationPage);
