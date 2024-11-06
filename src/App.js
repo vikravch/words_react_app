@@ -7,17 +7,16 @@ import TrainWordPage from "./feature/words/presentation/TrainWordPage";
 import {WordsDB} from "./feature/words/data/WordsDB";
 import {RouterContext, RouterContextWrapper} from "./general/context/RouterContext";
 import AppRouter from "./general/router/AppRouter";
+import {useFunction} from "./someScript";
 
 export const wordsDB = new WordsDB();
 
-class App extends Component {
-    render() {
-        return (
-            <RouterContextWrapper>
-                <AppRouter/>
-            </RouterContextWrapper>
-        );
-    }
+function App(props) {
+    return (
+        <RouterContextWrapper>
+            <AppRouter/>
+        </RouterContextWrapper>
+    );
 }
 
 export default App;

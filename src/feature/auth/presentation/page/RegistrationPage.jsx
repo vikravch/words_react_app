@@ -1,45 +1,44 @@
-import React, {Component} from 'react';
+import React, {Component, useRef} from 'react';
 import {register} from "../../domain/model/UserUseCases";
-import {withRouterContext} from "../../../../general/context/RouterContext";
+import {useRouterContext, withRouterContext} from "../../../../general/context/RouterContext";
 
-class RegistrationPage extends Component {
-    constructor(props) {
-        super(props);
-        this.emailRef = React.createRef();
-        this.passwordRef = React.createRef();
-        this.userNameRef = React.createRef();
-    }
-    handleRegistrationSubmit = async (event) => {
+const RegistrationPage = () => {
+    const {switchPath} = useRouterContext();
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+    const userNameRef = useRef(null);
+
+    const handleRegistrationSubmit = async (event) => {
         event.preventDefault();
-        const email = this.emailRef.current.value;
-        const password = this.passwordRef.current.value;
-        const userName = this.userNameRef.current.value;
+        const email = emailRef.current.value;
+        const password = passwordRef.current.value;
+        const userName = userNameRef.current.value;
         console.log(email, password, userName);
-        register(email, password, userName);
+        await register(email, password, userName);
+        switchPath('login');
     }
-    handleMoveToLogin = () => {
-        this.props.switchPath('login');
+    const handleMoveToLogin = () => {
+        switchPath('login');
     }
-    render() {
-        return (
-            <div>
-                <h1>Registration Page</h1>
-                <form onSubmit={this.handleRegistrationSubmit}>
-                    <input type="text"
-                           ref={this.emailRef}
-                           placeholder="Email"/>
-                    <input type="text"
-                           ref={this.userNameRef}
-                           placeholder="Username"/>
-                    <input type="password"
-                           ref={this.passwordRef}
-                           placeholder="Password"/>
-                    <input type="submit" value="Register"/>
-                </form>
-                <button onClick={this.handleMoveToLogin}>Move to login</button>
-            </div>
-        );
-    }
+
+    return (
+        <div>
+            <h1>Registration Page</h1>
+            <form onSubmit={handleRegistrationSubmit}>
+                <input type="text"
+                       ref={emailRef}
+                       placeholder="Email"/>
+                <input type="text"
+                       ref={userNameRef}
+                       placeholder="Username"/>
+                <input type="password"
+                       ref={passwordRef}
+                       placeholder="Password"/>
+                <input type="submit" value="Register"/>
+            </form>
+            <button onClick={handleMoveToLogin}>Move to login</button>
+        </div>
+    );
 }
 
-export default withRouterContext(RegistrationPage);
+export default RegistrationPage;

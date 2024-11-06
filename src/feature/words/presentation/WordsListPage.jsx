@@ -1,129 +1,131 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect, useState} from 'react';
 import ErrorMessage from "./component/ErrorMessage";
 import {Word} from "../domain/model/Word";
 import * as WordUseCases from "../domain/model/WordUseCases";
-import {withRouterContext} from "../../../general/context/RouterContext";
+import {useRouterContext, withRouterContext} from "../../../general/context/RouterContext";
 
-class WordsListPage extends Component {
-    state = {
+
+const WordsListPage = () => {
+    const [pageState, setPageState] = useState({
         error: '',
         word: '',
         translation: '',
         wordList: [],
         wordToEdit: null
-    }
-    componentDidMount() {
-        console.log('Component did mount');
-        this.refreshWordList()
-    }
+    });
+    const {switchPath} = useRouterContext();
 
-    validateForm = (word, translation) => {
-        return word && translation;
-    }
-    refreshWordList = async () => {
+    useEffect(() => {
+        console.log('Component did mount');
+        refreshWordList()
+    }, []);
+
+    const refreshWordList = async () => {
         const words = await WordUseCases.readListOfWords();
         console.log('Words', words);
-        this.setState({wordList: words});
+        setPageState({...pageState, wordList: words});
     }
-    removeWord = async (word) => {
+    const validateForm = (word, translation) => {
+        return word && translation;
+    }
+    const removeWord = async (word) => {
         await WordUseCases.deleteWord(word.id);
-        await this.refreshWordList();
+        await refreshWordList();
     }
-    updateWord = async (word) => {
+    const updateWord = async (word) => {
         await WordUseCases.editWord(word);
-        await this.refreshWordList();
+        await refreshWordList();
     }
-    handleWordFormSubmit = async (event) => {
+
+    const handleWordFormSubmit = async (event) => {
         event.preventDefault();
-        const word = this.state.word;
-        const translation = this.state.translation;
+        const word = pageState.word;
+        const translation = pageState.translation;
         if (!word || !translation) {
-            this.setState({error: 'Word and translation are required'});
+            setPageState({...pageState, error: 'Word and translation are required'});
             return;
         }
         console.log(word, translation);
-        if (this.state.wordToEdit) {
-            await this.updateWord({
-                ...this.state.wordToEdit,
-                word: this.state.word,
-                translate: this.state.translation
+        if (pageState.wordToEdit) {
+            await updateWord({
+                ...pageState.wordToEdit,
+                word: pageState.word,
+                translate: pageState.translation
             });
-            this.setState({word: '', translation: '', wordToEdit: null});
+            setPageState({...pageState, word: '', translation: '', wordToEdit: null});
         } else {
             await WordUseCases.addWord(new Word(
                 word, translation
             ));
         }
-        await this.refreshWordList();
-        this.setState({word: '', translation: ''});
+        await refreshWordList();
+        setPageState({...pageState, word: '', translation: ''});
     }
 
-    render() {
-        return (
-            <div>
-                <button onClick={() => {
-                    this.props.switchPath('login')
-                }}>Log out
-                </button>
+    return (
+        <div>
+            <button onClick={() => {
+                switchPath('login')
+            }}>Log out
+            </button>
 
-                <button onClick={() => {
-                    this.props.switchPath('train')
-                }}>Switch to train</button>
+            <button onClick={() => {
+                switchPath('train')
+            }}>Switch to train</button>
 
-                <h1>Words List Page</h1>
-                <form
-                    onSubmit={this.handleWordFormSubmit}
-                >
-                    <input type="text"
-                           placeholder="Word"
-                           value={this.state.word}
-                           onChange={(event
-                           ) => {
-                               if (this.validateForm(event.target.value, this.state.translation)) {
-                                   this.setState({word: event.target.value, error: ''});
-                               } else {
-                                   this.setState({word: event.target.value});
-                               }
-                           }}/>
-                    <input type="text"
-                           placeholder="Translation"
-                           value={this.state.translation}
-                           onChange={(event) => {
-                               if (this.validateForm(this.state.word, event.target.value)) {
-                                   this.setState({translation: event.target.value, error: ''});
-                               } else {
-                                   this.setState({translation: event.target.value});
-                               }
-                           }}/>
-                    <input type="submit" value={
-                        (this.state.wordToEdit)?"Edit word":"Add word"}/>
-                    {
-                        this.state.error && <ErrorMessage error={this.state.error}/>
-                    }
-                </form>
-                <ul>
-                    {
-                        this.state.wordList.map((word, index) => (
-                            <li key={index}>{word.word} - {word.translate}
-                                <span onClick={async ()=>{
-                                    console.log('Remove word', word)
-                                    await this.removeWord(word);
-                                }}> X </span>
-                                <span onClick={async ()=>{
-                                    console.log('Update word', word)
-                                    this.setState({
-                                        word: word.word,
-                                        translation: word.translate,
-                                        wordToEdit: word
-                                    })
-                                }}> [Update] </span>
-                            </li>
-                        ))
-                    }
-                </ul>
-            </div>
-        );
-    }
+            <h1>Words List Page</h1>
+            <form
+                onSubmit={handleWordFormSubmit}
+            >
+                <input type="text"
+                       placeholder="Word"
+                       value={pageState.word}
+                       onChange={(event
+                       ) => {
+                           if (validateForm(event.target.value, pageState.translation)) {
+                               setPageState({...pageState, word: event.target.value, error: ''});
+                           } else {
+                               setPageState({...pageState, word: event.target.value});
+                           }
+                       }}/>
+                <input type="text"
+                       placeholder="Translation"
+                       value={pageState.translation}
+                       onChange={(event) => {
+                           if (validateForm(pageState.word, event.target.value)) {
+                               setPageState({...pageState, translation: event.target.value, error: ''});
+                           } else {
+                               setPageState({...pageState, translation: event.target.value});
+                           }
+                       }}/>
+                <input type="submit" value={
+                    (pageState.wordToEdit)?"Edit word":"Add word"}/>
+                {
+                    pageState.error && <ErrorMessage error={pageState.error}/>
+                }
+            </form>
+            <ul>
+                {
+                    pageState.wordList.map((word, index) => (
+                        <li key={index}>{word.word} - {word.translate}
+                            <span onClick={async ()=>{
+                                console.log('Remove word', word)
+                                await removeWord(word);
+                            }}> X </span>
+                            <span onClick={async ()=>{
+                                console.log('Update word', word)
+                                setPageState({ ...pageState,
+                                    word: word.word,
+                                    translation: word.translate,
+                                    wordToEdit: word
+                                })
+                            }}> [Update] </span>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+    );
 }
 
-export default withRouterContext(WordsListPage);
+export default WordsListPage;

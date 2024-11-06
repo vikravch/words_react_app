@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext, useState} from "react";
 export const RouterContext = React.createContext({});
 
 // withRouterContext for class component
@@ -14,25 +14,21 @@ export function withRouterContext(Component) {
         );
     }
 }
-
-export class RouterContextWrapper extends React.Component{
-
-    state = {
-        currentPage: 'login'
+export function RouterContextWrapper(props){
+    const [routerData, setRouterData] = useState({
+        currentPage: 'test'
+    });
+    const switchPath = (path) => {
+        setRouterData({currentPage: path})
     }
-    switchPath = (path) => {
-        this.setState({currentPage: path})
-    }
-
-    render() {
-        return (
-            <RouterContext.Provider value={{
-                switchPath: this.switchPath,
-                currentPath: this.state.currentPage
-            }}>
-                {this.props.children}
-            </RouterContext.Provider>
-        );
-    }
-
+    return (
+        <RouterContext.Provider value={{
+            switchPath: switchPath,
+            currentPath: routerData.currentPage
+        }}>
+            {props.children}
+        </RouterContext.Provider>
+    );
 }
+
+export const useRouterContext = () => useContext(RouterContext);
