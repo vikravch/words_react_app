@@ -6,6 +6,10 @@ export async function login( email, password ) {
         userName: 'test'}
 }
 
+export function isLoggedIn(){
+    return localStorage.getItem('token') !== null
+}
+
 export async function register( email, password, userName ) {
     return {
         id: 1,

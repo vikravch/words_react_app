@@ -1,12 +1,23 @@
-import React, {Component, useRef} from 'react';
+import React, {Component, useEffect, useRef} from 'react';
 import {register} from "../../domain/model/UserUseCases";
-import {useRouterContext, withRouterContext} from "../../../../general/context/RouterContext";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {registerAsyncAction} from "../redux/registerAsyncAction";
 
 const RegistrationPage = () => {
-    const {switchPath} = useRouterContext();
+    const navigate = useNavigate();
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
     const userNameRef = useRef(null);
+
+    const dispatch = useDispatch();
+    const {isAuthenticated} = useSelector(state => state.auth);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/words');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleRegistrationSubmit = async (event) => {
         event.preventDefault();
@@ -14,11 +25,10 @@ const RegistrationPage = () => {
         const password = passwordRef.current.value;
         const userName = userNameRef.current.value;
         console.log(email, password, userName);
-        await register(email, password, userName);
-        switchPath('login');
+        dispatch(registerAsyncAction({email, password, userName} ));
     }
     const handleMoveToLogin = () => {
-        switchPath('login');
+        navigate('/login');
     }
 
     return (

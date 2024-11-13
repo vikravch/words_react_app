@@ -1,24 +1,20 @@
-import React, {Component, useContext} from 'react';
-import {RouterContext, useRouterContext, withRouterContext} from "../context/RouterContext";
+import React from 'react';
 import LoginPage from "../../feature/auth/presentation/page/LoginPage";
 import RegistrationPage from "../../feature/auth/presentation/page/RegistrationPage";
 import WordsListPage from "../../feature/words/presentation/WordsListPage";
 import TrainWordPage from "../../feature/words/presentation/TrainWordPage";
-import TestPage from "../../feature/test/presentation/TestPage";
-import TestLocalStorageHookPage from "../../feature/test/presentation/TestLocalStorageHookPage";
 import EmojiPage from "../../feature/test/presentation/EmojiPage";
+import {createBrowserRouter} from "react-router-dom";
+import {isLoggedIn} from "../../feature/auth/domain/model/UserUseCases";
 
-function AppRouter() {
-    const {currentPath} = useRouterContext();
-    return (
-        <div>
-            {currentPath === 'test' && <EmojiPage/>}
-            {currentPath === 'login' && <LoginPage/>}
-            {currentPath === 'registration' && <RegistrationPage/>}
-            {currentPath === 'words' && <WordsListPage/>}
-            {currentPath === 'train' && <TrainWordPage/>}
-        </div>
-    );
-}
-
-export default AppRouter;
+export const router = createBrowserRouter([
+    { path: "/", element: (
+        isLoggedIn()?
+            <WordsListPage/>:<LoginPage/>
+        )},
+    { path: "login", element: <LoginPage/>},
+    { path: "registration", element: <RegistrationPage/>},
+    { path: "words", element: <WordsListPage/>},
+    { path: "train", element: <TrainWordPage/>},
+    { path: "test", element: <EmojiPage/>}
+]);

@@ -1,36 +1,43 @@
 import React, {Component, useEffect, useRef} from 'react';
-import {login, logout} from "../../domain/model/UserUseCases";
 import style from './LoginPage.module.css';
 import banner from '../../../../assets/login_back.png';
 import {Title} from "../../../../general/styled_components/Title";
 import {Subtitle} from "../../../../general/styled_components/Subtitle";
 import {GoogleLoginButton} from "../../../../general/styled_components/GoogleLoginButton";
-import {useRouterContext, withRouterContext} from "../../../../general/context/RouterContext";
+import {useNavigate} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../redux/AuthSlice";
+import {loginAsyncAction} from "../redux/loginAsyncAction";
 
 const LoginPage = ()=>{
-    const {switchPath} = useRouterContext();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const {isAuthenticated} = useSelector(state => state.auth);
+
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
 
     useEffect(() => {
         console.log('Component did mount')
-        logout().then(() => {
-            console.log('Logged out')
-        });
-    }, []);
+        dispatch(logout());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/words');
+        }
+    }, [isAuthenticated, navigate]);
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
         console.log(email, password);
-        const user = await login(email, password);
-        switchPath('words');
-        console.log(user);
+        dispatch(loginAsyncAction(email, password));
     }
 
     const handleMoveToRegistration = () => {
-        switchPath('registration');
+        navigate('/registration');
     }
     return (
         <main className={style.main}>

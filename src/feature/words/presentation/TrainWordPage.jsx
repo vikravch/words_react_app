@@ -1,10 +1,9 @@
 import React, {Component, useEffect, useState} from 'react';
 import {getNextWordForTraining, saveTrainingResult} from "../domain/model/WordUseCases";
-import {useRouterContext, withRouterContext} from "../../../general/context/RouterContext";
-import {useFunction} from "../../../someScript";
+import {useNavigate} from "react-router-dom";
 
 const TrainWordPage = () => {
-    const {switchPath} = useRouterContext();
+    const navigate = useNavigate();
     const [word, setWord] = useState(null);
     const [translation, setTranslation] = useState('');
 
@@ -38,10 +37,10 @@ const TrainWordPage = () => {
     return (
         <div>
             <button onClick={() => {
-                switchPath('login')
+                navigate('/login')
             }}>Log out</button>
             <button onClick={() => {
-                switchPath('words')
+                navigate('/words')
             }}>Words list</button>
             <h1>Train Word Page</h1>
             <form onSubmit={handleTrainWordSubmit}>
